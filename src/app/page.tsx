@@ -3,12 +3,17 @@
 import { useState, useEffect } from "react";
 import { STORAGE_KEY } from "@/lib/constants";
 import { generateUsername } from "@/lib/utilities";
+import { useMutation } from "@tanstack/react-query";
+import { client } from "@/lib/client";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [username, setUsername] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const main = () => {
+      // It's going to return null on first load
       const stored = localStorage.getItem(STORAGE_KEY);
 
       if (stored) {
@@ -22,6 +27,15 @@ export default function Home() {
     };
     main();
   }, []);
+
+  const { mutate: createRoom } = useMutation({
+    mutationFn: async () => {
+      const res = await client.room.create.post();
+      if (res.status === 200) {
+        router.push(`/room/${res.data?.roomId}`);
+      }
+    },
+  });
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 ">
@@ -46,7 +60,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <button className="w-full bg-zinc-100 text-black font-bold text-sm hover:text-black  transition-colors mt-2 cursor-pointer disabled:opacity-50 p-3">
+            <button
+              onClick={() => createRoom()}
+              className="w-full bg-zinc-100 text-black font-bold text-sm hover:text-black  transition-colors mt-2 cursor-pointer disabled:opacity-50 p-3"
+            >
               CREATE SECURE ROOM
             </button>
           </div>

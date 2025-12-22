@@ -24,3 +24,14 @@ body {
   color: var(--foreground);
   font-family: var(--font-jetbrains-mono), monospace;
 }
+
+/* Standard syntax for Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+/* Webkit browsers (Chrome, Edge, Safari) */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
